@@ -9,6 +9,10 @@ workers_dev = true
 compatibility_date = "2021-12-27"
 compatibility_flags = []
 
+kv_namespaces = [
+  { binding = "KV", id = "374ed6fff387490ea60bfb17c03b5f6b", preview_id = "374ed6fff387490ea60bfb17c03b5f6b" }
+]
+
 [build]
 command = "node scripts/build.js production"
 [build.upload]

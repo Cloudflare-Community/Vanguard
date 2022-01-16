@@ -379,10 +379,10 @@ set-cookie-parser@^2.4.8:
   resolved "https://registry.yarnpkg.com/set-cookie-parser/-/set-cookie-parser-2.4.8.tgz#d0da0ed388bc8f24e706a391f9c9e252a13c58b2"
   integrity sha512-edRH8mBKEWNVIVMKejNnuJxleqYE/ZSdcT8/Nem9/mmosx12pctd80s2Oy00KNZzrogMZS5mauK2/ymL1bvlvg==
 
-slshx@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/slshx/-/slshx-0.1.1.tgz#349e11c4e0457d1f2bf0217fc8aa1f9f21f97095"
-  integrity sha512-6SJvTyX32L40cDISVcLJMD+QCiLSwuRRgvFtSAvvvZ2Iyf92e+NjOUbjNq3nhp5+LrNNsbE+xAADLeD9fodJDg==
+slshx@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/slshx/-/slshx-0.2.0.tgz#a36c47052151abe9403533d3acd322786c2f6d16"
+  integrity sha512-e/rCRjHzd27x1PZDv9pmMI263nDW5NGxfdFSmVmj7JhEgMXTltPDlZM9WmooccdsQXWkMZsElZcWBTF/rsg4pg==
   dependencies:
     discord-api-types "^0.25.2"
 

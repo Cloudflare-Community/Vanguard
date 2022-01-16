@@ -9,9 +9,12 @@ Currently Implemented Feature:
 - Timeout
 - Kick
 - Ban
-- Userinfo(Icon Broken)
+- Userinfo
+- Tags
+
+In progress:
+- Notes 
 
 Roadmap Features:
-- Notes
 - Logs
 - Anti-Spam/Anti-Scam(maybe)

@@ -4,4 +4,5 @@ import unban from "./unban";
 import kick from "./kick";
 import timeout from "./timeout";
 import userinfo from "./userinfo";
-export default {warn,ban,unban, kick, timeout, userinfo};
+import tag from "./tag";
+export default {warn,ban,unban,kick,timeout,userinfo,tag};

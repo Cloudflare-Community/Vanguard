@@ -19,20 +19,22 @@ export default function warn(): CommandHandler<Env> {
     const guildUser = await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
     if(!guildUser) return <Message ephemeral>⚠️Error: GuildMember was not found.⚠️</Message>;
     if(!guildUser.user) return <Message ephemeral>⚠️Error: GuildMember did not have a valid user.⚠️</Message>;
-    return <Message ephemeral>
+    const embed = <Message ephemeral>
       <Embed
         title={(guildUser.nick || guildUser.user.username) + "#" + guildUser.user.discriminator}
         timestamp={new Date()}
         color={guildUser.user.accent_color || Math.round(Math.random() * 16777215)}
         thumbnail={`https://cdn.discordapp.com/avatars/${guildUser.user.id}/${guildUser.user.avatar}.webp`}
-        footer={{text:"Data Fetched by Rhiannon", iconUrl:`https://cdn.discordapp.com/avatars/${guildUser.user.id}/${guildUser.user.avatar}.webp`}}
+        footer={{text:"Data Fetched by Rhiannon", iconUrl:`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}}
       >
         <Field name="Joined Discord:" inline>{convertSnowflakeToDate(guildUser.user.id)}</Field>
         <Field name="Joined Server:" inline>{convertSnowflakeToDate(guildUser.joined_at)}</Field>
         <Field name="Snowflake:">{guildUser.user.id}</Field>
         <Field name="Roles:" inline>{guildUser.roles.map(role => `<@&${role}>`).join(" ")}</Field>
       </Embed>
-    </Message>;
+    </Message>
+    console.log(embed.embeds[0]);
+    return embed;
   };
 }
 function convertSnowflakeToDate(snowflake: Snowflake) : Date{
