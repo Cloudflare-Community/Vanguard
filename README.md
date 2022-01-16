@@ -6,12 +6,12 @@ An as-yet fully serverless Discord Moderation Bot.
 
 Currently Implemented Feature:
 - Warn
-
-Roadmap Features:
-- Mute
+- Timeout
 - Kick
 - Ban
+- Userinfo(Icon Broken)
+
+Roadmap Features:
 - Notes
-- Userinfo
 - Logs
 - Anti-Spam/Anti-Scam(maybe)
