@@ -21,9 +21,9 @@ export default function show(): CommandHandler<Env> {
     }
   });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>⚠️Error: Guild was not detected.⚠️</Message>;
+    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
     const content = await env.KV.get(`Notes-${interaction.guild_id}-${user}-${name}`);
-    if(!content) return <Message ephemeral>⚠️Error: Note `{name}` for user {`<@${user.id}>`} does not exist.⚠️</Message>;
+    if(!content) return <Message ephemeral>❌Error: Note `{name}` for user {`<@${user.id}>`} does not exist.❌</Message>;
     return <Message>{content}</Message>;
   };
 }

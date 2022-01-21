@@ -20,7 +20,7 @@ export default function del(): CommandHandler<Env> {
     } 
   });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>⚠️Error: Guild was not detected.⚠️</Message>;
+    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
     await env.KV.delete(`Notes-${interaction.guild_id}-${user.id}-${name}`);
     return <Message ephemeral>Note `{name}` for {`<@${user.id}>`} has been deleted.</Message>;
   };

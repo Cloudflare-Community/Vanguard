@@ -11,9 +11,10 @@ Currently Implemented Feature:
 - Ban
 - Userinfo
 - Tags
+- Permissions System
 
 In progress:
-- Notes 
+- Notes, disabled, currently tracking issue with [Slshx](https://github.com/mrbbot/slshx/issues/1)
 
 Roadmap Features:
 - Logs

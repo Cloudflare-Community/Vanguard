@@ -16,9 +16,9 @@ export default function show(): CommandHandler<Env> {
     } 
   });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>⚠️Error: Guild was not detected.⚠️</Message>;
+    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
     const content = await env.KV.get(`Tags-${interaction.guild_id}-${name}`);
-    if(!content) return <Message ephemeral>⚠️Error: Tag `{name}` does not exist.⚠️</Message>;
+    if(!content) return <Message ephemeral>❌Error: Tag `{name}` does not exist.❌</Message>;
     return <Message>{content}</Message>;
   };
 }

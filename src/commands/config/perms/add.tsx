@@ -1,39 +1,31 @@
 import {
   CommandHandler,
   useDescription,
-  useString,
+  useRole,
   createElement,
   Message,
   Embed,
   Field
 } from "slshx";
-import {isModerator,createLog} from "../../utils";
+import {isAdmin,createLog} from "../../../utils";
 
-export default function edit(): CommandHandler<Env> {
-  useDescription("edits(overwrites) a tag");
-  const name = useString("name", "name of tag", { required: true,
-    async autocomplete(interaction, env: Env, ctx) {
-      if(!interaction.guild_id) return [];
-      const tags = await env.KV.list({ prefix: `Tags-${interaction.guild_id}-${name}` }) as KVNamespaceListResult<string>;
-      return tags.keys.map((tag) => tag.name.replace(`Tags-${interaction.guild_id}-`, ""));
-    } 
-  });
-  const content = useString("content", "contents of tag", { required: true });
+export default function add(): CommandHandler<Env> {
+  useDescription("adds a role to the list of roles that can use the moderation-related bot commands");
+  const role = useRole("role", "role to allow", { required: true });
   return async (interaction, env) => {
     if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
     if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
-    await env.KV.put(`Tags-${interaction.guild_id}-${name}`, content);
+    if(!isAdmin(interaction.member.permissions)) return <Message ephemeral>❌Error: You must be an admin to use this command.❌</Message>;
+    await env.KV.put(`Config-${interaction.guild_id}-perms-${role.id}`, "moderator");
     const msg = <Message ephemeral>
       <Embed
-        title={`Edited Tag`}
+        title={"Added Role to Moderation List"}
         timestamp={new Date()}
         color={5793266}
         footer={{text:"Command Executed by Rhiannon", iconUrl:`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}}
       >
-        <Field name="Name:">{name}</Field>
-        <Field name="Content:">{content}</Field>
-        <Field name="Invoked By:">{`<@${interaction.member.user.id}>`}</Field>
+        <Field name="Role:">{`<@&${role.id}>`}</Field>
+        <Field name="Invoked by:">{`<@${interaction.member.user.id}>`}</Field>
       </Embed>
     </Message>;
     const res = await createLog(interaction.guild_id, msg, env);
