@@ -6,4 +6,5 @@ import timeout from "./timeout";
 import userinfo from "./userinfo";
 import tag from "./tag";
 import config from "./config";
-export default {warn,ban,unban,kick,timeout,userinfo,tag,config};
+import role from "./role";
+export default {warn,ban,unban,kick,timeout,userinfo,tag,config,role};
