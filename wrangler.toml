@@ -1,12 +1,11 @@
-name = "slshx-starter"
+name = "rhiannon"
 type = "javascript"
 
-account_id = "" # TODO: add your Cloudflare account ID here
-workers_dev = true
-# route = ""
-# zone_id = ""
+account_id = "864cdf76f8254fb5539425299984d766" # TODO: add your Cloudflare account ID here
+zone_id = "3c64a34e26b07a72bd3d3d3172d4c631"
+routes = ["https://rhiannon.cloudflare.community", "https://rhiannon.cloudflare.community/*"]
 
-compatibility_date = "2021-12-27"
+compatibility_date = "2022-01-20"
 compatibility_flags = []
 
 kv_namespaces = [

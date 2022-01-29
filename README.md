@@ -2,7 +2,7 @@
 
 Built using [Slshx](https://github.com/mrbbot/slshx), [Miniflare](https://github.com/cloudflare/miniflare), [Cloudflare Workers](https://workers.cloudflare.com), and [ESBuild](https://esbuild.github.io)
 
-An as-yet fully serverless Discord Moderation Bot.
+An as-yet fully serverless Discord Moderation Bot. Documentation will probably come at some point
 
 Currently Implemented Feature:
 - Warn
@@ -12,10 +12,11 @@ Currently Implemented Feature:
 - Userinfo
 - Tags
 - Permissions System
+- Logs
+- Leave
 
 In progress:
 - Notes, disabled, currently tracking issue with [Slshx](https://github.com/mrbbot/slshx/issues/1)
 
 Roadmap Features:
-- Logs
-- Anti-Spam/Anti-Scam(maybe)
+- Anti-Spam/Anti-Scam(Coming with Gateway Support Soon)

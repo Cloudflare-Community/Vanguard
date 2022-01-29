@@ -1,5 +1,5 @@
 {
-  "name": "slshx-starter",
+  "name": "rhiannon",
   "version": "1.0.0",
   "type": "module",
   "module": "dist/index.mjs",
@@ -9,11 +9,14 @@
     "deploy:global": "node --no-warnings --experimental-vm-modules scripts/deploy.js"
   },
   "dependencies": {
+    "itty-router": "^2.4.10",
+    "nanoid": "^3.2.0",
     "slshx": "0.2.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.3.0",
     "esbuild": "^0.14.8",
-    "miniflare": "2.2.0"
+    "miniflare": "2.2.0",
+    "wrangler": "^0.0.10"
   }
 }

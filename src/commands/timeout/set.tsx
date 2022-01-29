@@ -26,6 +26,8 @@ export default function set(): CommandHandler<Env> {
     const guildUser = await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
     if(!guildUser) return <Message ephemeral>❌Error: GuildMember was not found.❌</Message>;
     if(!guildUser.user) return <Message ephemeral>❌Error: GuildMember did not have a valid user.❌</Message>;
+    const choice = choices.find(c => c.value === duration);
+    if(!choice) return <Message ephemeral>❌Error: Invalid duration.❌</Message>;
     await timeOut(user.id, interaction.guild_id, reason, duration, env);
     await sendDM(user.id, `<@${user.id}>, you have been timed out for ${reason}.`, env);
     const msg = <Message ephemeral>
@@ -37,7 +39,7 @@ export default function set(): CommandHandler<Env> {
         footer={{text:"Command Executed by Rhiannon", iconUrl:`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}}
       >
         <Field name="Target:">{`<@${user.id}>`}</Field>
-        <Field name="Duration">{choices.find(e => e.value === duration)}</Field>
+        <Field name="Duration">{choice.name}</Field>
         <Field name="Reason:">{reason}</Field>
         <Field name="Invoked By:">{`<@${interaction.member.user.id}>`}</Field>
       </Embed>

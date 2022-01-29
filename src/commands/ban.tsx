@@ -21,11 +21,12 @@ export default function ban(): CommandHandler<Env> {
     if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
     if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
     if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    if(user.id === "922374334159409173") return <Message ephemeral>❌Error: You cannot ban Rhiannon with this command.❌</Message>;
     if(days && (days < 0 || days > 7)) return <Message ephemeral>Error: Invalid days, must be between 0 and 7</Message>;
     const guildUser = await getGuildUser(user.id, interaction.guild_id, env);
     if(!guildUser.user) return <Message ephemeral>❌Error: User was not found.❌</Message>;
     await sendDM(user.id, `<@${user.id}>, you have been banned for ${reason}.`, env);
-    await createBan(user.id, interaction.guild_id, reason, days, env);
+    await createBan(user.id, interaction.guild_id, reason, days || 1, env);
     const msg = <Message ephemeral>
       <Embed
         title={"Banned User"}
@@ -53,8 +54,7 @@ export default function ban(): CommandHandler<Env> {
   };
 }
 
-async function createBan(user: Snowflake, guild: Snowflake, reason: string, days: number | null, env: Env) : Promise<Response> {
-  let body = "{}";
-  if(days) body = JSON.stringify({"delete_message_days": days});
+async function createBan(user: Snowflake, guild: Snowflake, reason: string, days: number, env: Env) : Promise<Response> {
+  const body = JSON.stringify({"delete_message_days": days});
   return await fetch(`https://discord.com/api/v9/guilds/${guild}/bans/${user}`, {method:"PUT",headers:{Authorization: env.TOKEN,"content-type":"application/json","X-Audit-Log-Reason":reason},body});
 }

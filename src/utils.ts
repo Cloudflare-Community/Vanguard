@@ -1,4 +1,5 @@
 import type {APIChannel, APIChatInputApplicationCommandInteraction, APIGuildMember, APIInteractionResponseCallbackData, APIMessage, APIRole, Snowflake} from "discord-api-types";
+import { nanoid } from "nanoid";
 const fields = ["CREATE_INSTANT_INVITE","KICK_MEMBERS","BAN_MEMBERS","ADMINISTRATOR","MANAGE_CHANNELS","MANAGE_GUILD","ADD_REACTIONS","VIEW_AUDIT_LOG","PRIORITY_SPEAKER","STREAM","VIEW_CHANNEL","SEND_MESSAGES","SEND_TTS_MESSAGES","MANAGE_MESSAGES","EMBED_LINKS","ATTACH_FILES","READ_MESSAGE_HISTORY","MENTION_EVERYONE","USE_EXTERNAL_EMOJIS","VIEW_GUILD_INSIGHTS","CONNECT","SPEAK","MUTE_MEMBERS","DEAFEN_MEMBERS","MOVE_MEMBERS","USE_VAD","CHANGE_NICKNAME","MANAGE_NICKNAMES","MANAGE_ROLES","MANAGE_WEBHOOKS","MANAGE_EMOJIS_AND_STICKERS","USE_APPLICATION_COMMANDS","REQUEST_TO_SPEAK","MANAGE_EVENTS","MANAGE_THREADS","CREATE_PUBLIC_THREADS","CREATE_PRIVATE_THREADS","USE_EXTERNAL_STICKERS","SEND_MESSAGES_IN_THREADS","START_EMBEDDED_ACTIVITIES","MODERATE_MEMBERS"];
 export async function sendDM(user: Snowflake, content: string, env: Env) : Promise<APIMessage> {
   /* Create DM */
@@ -31,6 +32,7 @@ export function getPerms(permissions: string) : string[] {
 }
 
 export async function getPermsFromRoles(roles: Snowflake[], guild_id: Snowflake, env: Env) : Promise<string[]> {
+  if(!roles || !guild_id) return [];
   const guildRoles = (await (await fetch(`https://discord.com/api/v9/guilds/${guild_id}/roles`, {method:"GET",headers:{Authorization: env.TOKEN}})).json()) as APIRole[];
   const permMap = new Map();
   for (let role of roles) {
@@ -48,10 +50,9 @@ export async function getGuildUser(user: Snowflake, guild: Snowflake, env: Env) 
 }
 
 export async function createLog(guild: Snowflake, intRes: APIInteractionResponseCallbackData, env: Env) : Promise<string> {
-  const channel = await env.KV.get(`Config-${guild}-logs`) as Snowflake;
+  const channel = await env.KV.get(`Config-${guild}-Logs`) as Snowflake;
   if(!channel) return "Missing Channel";
   const msgObj = {content:intRes.content,embeds:intRes.embeds,"allowed_mentions":{parse:{}},components:intRes.components};
-  console.log(JSON.stringify(msgObj));
   try {
     const res = await (await fetch(`https://discord.com/api/v9/channels/${channel}/messages`, {method:"POST",headers:{Authorization: env.TOKEN,"content-type":"application/json"},body:JSON.stringify(msgObj)})).json();
     console.log(res);
@@ -59,4 +60,10 @@ export async function createLog(guild: Snowflake, intRes: APIInteractionResponse
   } catch(e) {
     return "Error while sending log";
   }
+}
+
+export async function createErrorLog(interaction: APIChatInputApplicationCommandInteraction, err: any, env: Env) : Promise<string> {
+  const id = nanoid();
+  await env.KV.put(`Error-${id}`, JSON.stringify({interaction,err}));
+  return id;
 }

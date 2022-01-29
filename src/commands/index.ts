@@ -7,4 +7,5 @@ import userinfo from "./userinfo";
 import tag from "./tag";
 import config from "./config";
 import role from "./role";
-export default {warn,ban,unban,kick,timeout,userinfo,tag,config,role};
+import about from "./about";
+export default {warn,ban,unban,kick,timeout,userinfo,tag,config,role,about};
