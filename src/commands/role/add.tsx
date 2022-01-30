@@ -9,8 +9,10 @@ import {
   Embed,
   Field
 } from "slshx";
-import type {Snowflake} from "discord-api-types";
-import {isAdmin,createLog} from "../../utils";
+import { isAdmin, createLog } from "../../utils";
+import { addRole } from "../../utils/discord";
+
+import { GUILD_NOT_FOUND, NOT_A_MEMBER, MUST_BE_AN_ADMIN } from '../../utils/mesges';
 
 export default function add(): CommandHandler<Env> {
   useDescription("adds a role to a user");
@@ -18,11 +20,24 @@ export default function add(): CommandHandler<Env> {
   const role = useRole("role", "role to add", { required: true });
   const reason = useString("reason", "reason for adding role", { required: true });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!isAdmin(interaction.member.permissions)) return <Message ephemeral>❌Error: You must be an admin to use this command.❌</Message>;
+    if (!interaction.guild_id) {
+      return GUILD_NOT_FOUND;
+    }
+
+    if (!interaction.member) {
+      return NOT_A_MEMBER;
+    }
+
+    if (!isAdmin(interaction.member.permissions)) {
+      return MUST_BE_AN_ADMIN;
+    }
+
     const roleResponse = await addRole(user.id, interaction.guild_id, role.id, reason, env);
-    if(roleResponse.status !== 204) return <Message ephemeral>❌Error: An error occurred while attempting to add the role.❌</Message>;
+
+    if (roleResponse.status !== 204) {
+      return <Message ephemeral>❌Error: An error occurred while attempting to add the role.❌</Message>;
+    }
+
     const msg = <Message ephemeral>
       <Embed
         title={"Added Role to User"}
@@ -47,8 +62,4 @@ export default function add(): CommandHandler<Env> {
         return msg;
     }
   };
-}
-
-async function addRole(user: Snowflake, guild: Snowflake, role: Snowflake, reason: string, env: Env) : Promise<Response> {
-  return await fetch(`https://discord.com/api/v9/guilds/${guild}/members/${user}/roles/${role}`, {method:"PUT",headers:{Authorization: env.TOKEN,"X-Audit-Log-Reason":reason}});
 }
