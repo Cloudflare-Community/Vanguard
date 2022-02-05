@@ -16,7 +16,7 @@ router.post("/", async (req: Request, env: Env, ctx: ExecutionContext) => {
   });
   const response = await handler(req, env, ctx);
   const logRes = response.clone();
-  console.log(logRes.json());
+  console.log(await logRes.json());
   return response;
 });
 router.get("/rhiannon.png", () => fetch("https://i.imgur.com/04TWiwa.png"));
