@@ -9,16 +9,15 @@ import {
   Field
 } from "slshx";
 import type {Snowflake} from "discord-api-types";
-import {sendDM,isModerator,getGuildUser,createLog} from "../utils";
+import {sendDM,validatePermissions,getGuildUser,createLog} from "../utils";
 
 export default function kick(): CommandHandler<Env> {
   useDescription("kicks a user");
   const user = useUser("user", "user to ban", { required: true });
   const reason = useString("reason", "reason for ban", { required: true });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    const isInvalid = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     if(user.id === "922374334159409173") return <Message ephemeral>❌Error: You cannot kick Rhiannon with this command.❌</Message>;
     const guildUser = await getGuildUser(user.id, interaction.guild_id, env);
     if(!guildUser.user) return <Message ephemeral>❌Error: User was not found.❌</Message>;

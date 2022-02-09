@@ -17,7 +17,7 @@
 
     // Alias Path Resolution
     "paths": {
-      "utils": ["src/utils"]
+      "utils": ["./src/utils"]
     },
     "noEmit": true,
     "strict": true,

@@ -8,16 +8,15 @@ import {
   Field
 } from "slshx";
 import type {APIBan,Snowflake} from "discord-api-types";
-import {isModerator, createLog} from "../utils";
+import {validatePermissions, createLog} from "../utils";
 
 export default function unban(): CommandHandler<Env> {
   useDescription("unbans a user");
   const user = useString("user", "user to unban", { required: true }) as Snowflake;
   const reason = useString("reason", "reason for unban", { required: true });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    const isInvalid = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     const ban = await getBan(user, interaction.guild_id, env);
     if(!ban) return <Message ephemeral>❌Error: User is not banned.❌</Message>;
     await removeBan(user, interaction.guild_id, reason, env);

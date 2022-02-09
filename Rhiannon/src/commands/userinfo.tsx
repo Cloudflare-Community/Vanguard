@@ -8,15 +8,14 @@ import {
   Field
 } from "slshx";
 import type {Snowflake} from "discord-api-types";
-import {isModerator, getPermsFromRoles, getGuildUser} from "../utils";
+import {validatePermissions, getGuildUser} from "../utils";
 
 export default function userinfo(): CommandHandler<Env> {
   useDescription("gets info about user");
   const user = useUser("user", "user to get info about");
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    const isInvalid = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     if(!interaction.member || !interaction.user) return <Message ephemeral>❌Error: InvokeMember was not detected.❌</Message>;
     const guildUser = (!user || interaction.user.id === user.id) ? interaction.member : await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
     if(!guildUser) return <Message ephemeral>❌Error: GuildMember was not found.❌</Message>;

@@ -1,4 +1,3 @@
-import { nanoid } from "nanoid";
 import type { APIChatInputApplicationCommandInteraction, APIInteractionResponseCallbackData, Snowflake} from "discord-api-types";
 
 export async function createLog(guild: Snowflake, intRes: APIInteractionResponseCallbackData, env: Env) : Promise<string> {
@@ -12,10 +11,4 @@ export async function createLog(guild: Snowflake, intRes: APIInteractionResponse
   } catch(e) {
     return "Error while sending log";
   }
-}
-
-export async function createErrorLog(interaction: APIChatInputApplicationCommandInteraction, err: any, env: Env) : Promise<string> {
-  const id = nanoid();
-  await env.KV.put(`Error-${id}`, JSON.stringify({interaction,err}));
-  return id;
 }

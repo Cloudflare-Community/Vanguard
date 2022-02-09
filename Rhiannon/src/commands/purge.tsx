@@ -10,7 +10,7 @@ import {
   Message
 } from "slshx";
 import type {Snowflake} from "discord-api-types";
-import {sendDM,isModerator,getGuildUser,createLog} from "../utils";
+import {sendDM,validatePermissions,getGuildUser,createLog} from "../utils";
 
 export default function ban(): CommandHandler<Env> {
   useDescription("bans a user");
@@ -18,9 +18,8 @@ export default function ban(): CommandHandler<Env> {
   const reason = useString("reason", "reason for ban", { required: true });
   const days = useInteger("days", "number of days to delete messages");
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    const isInvalid = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     if(days && (days < 0 || days > 7)) return <Message ephemeral>Error: Invalid days, must be between 0 and 7</Message>;
     const guildUser = await getGuildUser(user.id, interaction.guild_id, env);
     if(!guildUser.user) return <Message ephemeral>❌Error: User was not found.❌</Message>;

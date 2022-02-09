@@ -5,6 +5,7 @@
   "module": "dist/index.mjs",
   "private": true,
   "scripts": {
+    "build": "esbuild src/index.tsx --loader:.html=text --format=esm --target=esnext --bundle --minify --sourcemap --outfile=dist/index.mjs",
     "dev": "miniflare --watch --debug --wrangler-env=development",
     "deploy:global": "node --no-warnings --experimental-vm-modules scripts/deploy.js"
   },

@@ -9,16 +9,15 @@ import {
   Field
 } from "slshx";
 import {timeOut} from "./set";
-import {sendDM,isModerator,getGuildUser,createLog} from "../../utils";
+import {sendDM,validatePermissions,getGuildUser,createLog} from "../../utils";
 
 export default function remove(): CommandHandler<Env> {
   useDescription("removes a timeout");
   const user = useUser("user", "user to remove timeout from", { required: true });
   const reason = useString("reason", "reason for timeout removal", { required: true });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    const isInvalid = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     const guildUser = await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
     if(!guildUser) return <Message ephemeral>❌Error: GuildMember was not found.❌</Message>;
     if(!guildUser.user) return <Message ephemeral>❌Error: GuildMember did not have a valid user.❌</Message>;

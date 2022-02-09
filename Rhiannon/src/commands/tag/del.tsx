@@ -7,7 +7,7 @@ import {
   Embed,
   Field
 } from "slshx";
-import {isModerator,createLog} from "../../utils";
+import {validatePermissions,createLog} from "../../utils";
 
 export default function del(): CommandHandler<Env> {
   useDescription("deletes a tag");
@@ -19,9 +19,8 @@ export default function del(): CommandHandler<Env> {
     } 
   });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    const isInvalid = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     await env.KV.delete(`Tags-${interaction.guild_id}-${name}`);
     const msg = <Message ephemeral>
       <Embed
