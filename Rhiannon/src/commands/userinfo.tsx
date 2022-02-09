@@ -17,11 +17,10 @@ export default function userinfo(): CommandHandler<Env> {
     if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
     if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
     if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
-    if(!interaction.member || !interaction.member.user) return <Message ephemeral>❌Error: InvokeMember was not detected.❌</Message>;
-    const guildUser = await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
+    if(!interaction.member || !interaction.user) return <Message ephemeral>❌Error: InvokeMember was not detected.❌</Message>;
+    const guildUser = (!user || interaction.user.id === user.id) ? interaction.member : await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
     if(!guildUser) return <Message ephemeral>❌Error: GuildMember was not found.❌</Message>;
     if(!guildUser.user) return <Message ephemeral>❌Error: GuildMember did not have a valid user.❌</Message>;
-    const roles : string[] = await getPermsFromRoles(guildUser.roles, interaction.guild_id, env);
     return <Message ephemeral>
       <Embed
         title={(guildUser.nick || guildUser.user.username) + "#" + guildUser.user.discriminator}

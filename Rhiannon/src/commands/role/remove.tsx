@@ -9,38 +9,27 @@ import {
   Embed,
   Field
 } from "slshx";
-import { isAdmin, createLog } from "../../utils";
-import { addRole } from "../../utils/discord";
+import { isAdmin, createLog, removeRole, GUILD_NOT_FOUND, NOT_A_MEMBER, MUST_BE_AN_ADMIN } from "utils";
 
-import { GUILD_NOT_FOUND, NOT_A_MEMBER, MUST_BE_AN_ADMIN } from '../../utils/mesges';
-
-export default function add(): CommandHandler<Env> {
-  useDescription("adds a role to a user");
-  const user = useUser("user", "user to add role to", { required: true });
-  const role = useRole("role", "role to add", { required: true });
-  const reason = useString("reason", "reason for adding role", { required: true });
+export default function remove(): CommandHandler<Env> {
+  useDescription("removes a role from a user");
+  const user = useUser("user", "user to remove role from", { required: true });
+  const role = useRole("role", "role to remove", { required: true });
+  const reason = useString("reason", "reason for removal", { required: true });
   return async (interaction, env) => {
-    if (!interaction.guild_id) {
-      return GUILD_NOT_FOUND;
-    }
+    if (!interaction.guild_id) return GUILD_NOT_FOUND;
+    if (!interaction.member) return NOT_A_MEMBER;
+    if (!isAdmin(interaction.member.permissions)) return MUST_BE_AN_ADMIN;
 
-    if (!interaction.member) {
-      return NOT_A_MEMBER;
-    }
-
-    if (!isAdmin(interaction.member.permissions)) {
-      return MUST_BE_AN_ADMIN;
-    }
-
-    const roleResponse = await addRole(user.id, interaction.guild_id, role.id, reason, env);
-
+    const roleResponse = await removeRole(user.id, interaction.guild_id, role.id, reason, env);
+    
     if (roleResponse.status !== 204) {
-      return <Message ephemeral>❌Error: An error occurred while attempting to add the role.❌</Message>;
+      return <Message ephemeral>❌Error: An error occurred while attempting to remove this role.❌</Message>;
     }
-
+  
     const msg = <Message ephemeral>
       <Embed
-        title={"Added Role to User"}
+        title={"Removed Role from User"}
         timestamp={new Date()}
         color={5793266}
         footer={{text:"Command Executed by Rhiannon", iconUrl:`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}}

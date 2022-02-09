@@ -8,19 +8,17 @@ import {
   Embed,
   Field
 } from "slshx";
-import {isModerator,getGuildUser,sendDM,createLog} from "../utils";
+import {validatePermissions,getGuildUser,sendDM,createLog} from "utils";
 
 export default function warn(): CommandHandler<Env> {
   useDescription("warns a user");
   const user = useUser("user", "user to warn", { required: true });
   const warning = useString("warning", "warning message", { required: true });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
-    const guildUser = await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
-    if(!guildUser) return <Message ephemeral>❌Error: GuildMember was not found.❌</Message>;
-    if(!guildUser.user) return <Message ephemeral>❌Error: GuildMember did not have a valid user.❌</Message>;
+    const valid = await validatePermissions(interaction, env);
+    if(valid) return valid;
+    const guildMember = await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
+    if(!guildMember) return <Message ephemeral>❌Error: GuildMember was not found.❌</Message>;
     await sendDM(user.id, warning, env);
     const msg = <Message ephemeral>
       <Embed

@@ -15,6 +15,10 @@
     // Required by esbuild
     "isolatedModules": true,
 
+    // Alias Path Resolution
+    "paths": {
+      "utils": ["src/utils"]
+    },
     "noEmit": true,
     "strict": true,
     "esModuleInterop": true,

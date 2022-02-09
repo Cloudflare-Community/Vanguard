@@ -1,7 +1,4 @@
-.DS_Store
-.idea
-dist
-node_modules
-env.jsonc
-.env
-.mf
+**/.env
+**/.mf
+**/node_modules
+**/dist
