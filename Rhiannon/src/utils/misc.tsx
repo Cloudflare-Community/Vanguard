@@ -1,5 +1,4 @@
 import type {APIChannel, APIChatInputApplicationCommandInteraction, APIGuildMember, APIMessage, InteractionType, Snowflake} from "discord-api-types";
-import { createElement, Message } from "slshx";
 
 const BASE_URL = "https://discord.com/api/v9";
 

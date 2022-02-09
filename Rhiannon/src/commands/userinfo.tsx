@@ -16,22 +16,24 @@ export default function userinfo(): CommandHandler<Env> {
   return async (interaction, env) => {
     const isInvalid = await validatePermissions(interaction, env);
     if(isInvalid) return isInvalid;
-    if(!interaction.member || !interaction.user) return <Message ephemeral>❌Error: InvokeMember was not detected.❌</Message>;
-    const guildUser = (!user || interaction.user.id === user.id) ? interaction.member : await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
+    const guildUser = (!user || interaction.user!.id === user.id) ? (() => {
+      const member = interaction.member!;
+      if(!member.user) member.user = interaction.user!;
+      return member;
+    })() : await getGuildUser(user ? user.id : interaction.user!.id, interaction.guild_id!, env);
     if(!guildUser) return <Message ephemeral>❌Error: GuildMember was not found.❌</Message>;
-    if(!guildUser.user) return <Message ephemeral>❌Error: GuildMember did not have a valid user.❌</Message>;
     return <Message ephemeral>
       <Embed
-        title={(guildUser.nick || guildUser.user.username) + "#" + guildUser.user.discriminator}
+        title={(guildUser.nick || guildUser.user!.username) + "#" + guildUser.user!.discriminator}
         timestamp={new Date()}
-        color={guildUser.user.accent_color || Math.round(Math.random() * 16777215)}
-        thumbnail={`https://cdn.discordapp.com/avatars/${guildUser.user.id}/${guildUser.user.avatar}.webp`}
-        footer={{text:"Command Executed by Rhiannon", iconUrl:`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}}
+        color={guildUser.user!.accent_color || Math.round(Math.random() * 16777215)}
+        thumbnail={`https://cdn.discordapp.com/avatars/${guildUser.user!.id}/${guildUser.user!.avatar}.webp`}
+        footer={{text:"Command Executed by Vanguard", iconUrl:`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}}
       >
-        {`<@${guildUser.user.id}>`}
-        <Field name="Joined Discord:" inline>{`<t:${Math.round(convertSnowflakeToDate(guildUser.user.id).getTime()/1000)}:F>`}</Field>
+        {`<@${guildUser.user!.id}>`}
+        <Field name="Joined Discord:" inline>{`<t:${Math.round(convertSnowflakeToDate(guildUser.user!.id).getTime()/1000)}:F>`}</Field>
         <Field name="Joined Server:" inline>{`<t:${Math.round(new Date(guildUser.joined_at).getTime()/1000)}:F>`}</Field>
-        <Field name="User ID:">{guildUser.user.id}</Field>
+        <Field name="User ID:">{guildUser.user!.id}</Field>
         <Field name="Roles:">{guildUser.roles.length !== 0 ? guildUser.roles.map(role => `<@&${role}>`).join(" ") : "None"}</Field>
       </Embed>
     </Message>;

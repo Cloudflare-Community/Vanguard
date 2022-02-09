@@ -9,20 +9,19 @@ import {
   useString
 } from "slshx";
 import type {Snowflake} from "discord-api-types";
-import {createLog,isAdmin} from "../utils";
+import {createLog,validatePermissions} from "../utils";
 
 export default function leave(): CommandHandler<Env> {
-  useDescription("makes Rhiannon leave the server");
-  const reason = useString("reason", "reason for removing Rhiannon", { required: true });
+  useDescription("makes Vanguard leave the server");
+  const reason = useString("reason", "reason for removing v", { required: true });
   const cancel = useButton(() => {
     return <Message update ephemeral>Leave has been cancelled.</Message>;
   });
   const buttonId = useButton(async (interaction, env: Env, ctx) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
+    if(!interaction.guild_id || !interaction.member) throw new Error("Invalid interaction.");
     const msg = <Message ephemeral>
       <Embed
-        title={"Rhiannon has been removed from the server. Have a nice day!"}
+        title={"Vanguard has been removed from the server. Have a nice day!"}
         timestamp={new Date()}
         color={15548997}
         thumbnail={`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}
@@ -35,13 +34,12 @@ export default function leave(): CommandHandler<Env> {
     ctx.waitUntil(leaveGuild(interaction.guild_id, env));
     return msg;
   });
-  return async (interaction) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isAdmin(interaction.member.permissions))) return <Message ephemeral>❌Error: You must be an admin to use this command.❌</Message>;
+  return async (interaction, env: Env) => {
+    const isInvalid = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     return <Message ephemeral>
       <Embed
-        title={"Please confirm that you would like to make Rhiannon leave the server."}
+        title={"Please confirm that you would like to make Vanguard leave the server."}
         timestamp={new Date()}
         color={15548997}
         thumbnail={`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}

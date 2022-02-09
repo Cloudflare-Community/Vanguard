@@ -24,7 +24,7 @@ export default function list(): CommandHandler<Env> {
         title={"Roles currently on the Moderation List"}
         timestamp={new Date()}
         color={5793266}
-        footer={{text:"Command Executed by Rhiannon", iconUrl:`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}}
+        footer={{text:"Command Executed by Vanguard", iconUrl:`https://cdn.discordapp.com/avatars/922374334159409173/00da613d16217aa6b2ff31e01ba25c1c.webp`}}
       >
         Note that having the `Administrator` permission bypasses moderation role checking.
         <Field name="Roles:">{messArr.join(" ")}</Field>
