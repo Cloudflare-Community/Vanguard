@@ -10,7 +10,7 @@ import {
   Field
 } from "slshx";
 import type {Snowflake} from "discord-api-types";
-import {sendDM,isModerator,getGuildUser,createLog} from "../../utils";
+import {sendDM,validatePermissions,getGuildUser,createLog} from "../../utils";
 
 const choices = [{name: "One Minute", value: 60}, {name: "One Hour", value: 3600}, {name: "One Day", value: 86400}];
 
@@ -20,9 +20,8 @@ export default function set(): CommandHandler<Env> {
   const reason = useString("reason", "reason for timeout", { required: true });
   const duration = useInteger("duration", "duration user will be timed out", { required: true, choices });
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    const isInvalid = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     const guildUser = await getGuildUser(user ? user.id : interaction.member.user.id, interaction.guild_id, env);
     if(!guildUser) return <Message ephemeral>❌Error: GuildMember was not found.❌</Message>;
     if(!guildUser.user) return <Message ephemeral>❌Error: GuildMember did not have a valid user.❌</Message>;

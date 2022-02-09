@@ -10,7 +10,7 @@ import {
   Message
 } from "slshx";
 import type {Snowflake} from "discord-api-types";
-import {sendDM,isModerator,getGuildUser,createLog} from "../utils";
+import {sendDM,validatePermissions,getGuildUser,createLog} from "../utils";
 
 export default function ban(): CommandHandler<Env> {
   useDescription("bans a user");
@@ -18,15 +18,14 @@ export default function ban(): CommandHandler<Env> {
   const reason = useString("reason", "reason for ban", { required: true });
   const days = useInteger("days", "number of days to delete messages");
   return async (interaction, env) => {
-    if(!interaction.guild_id) return <Message ephemeral>❌Error: Guild was not detected.❌</Message>;
-    if(!interaction.member) return <Message ephemeral>❌Error: You must be a member of this guild to use this command.❌</Message>;
-    if(!(await isModerator(interaction, env))) return <Message ephemeral>❌Error: You must be a moderator to use this command.❌</Message>;
+    const newInteraction = await validatePermissions(interaction, env);
+    if(isInvalid) return isInvalid;
     if(user.id === "922374334159409173") return <Message ephemeral>❌Error: You cannot ban Rhiannon with this command.❌</Message>;
     if(days && (days < 0 || days > 7)) return <Message ephemeral>Error: Invalid days, must be between 0 and 7</Message>;
-    const guildUser = await getGuildUser(user.id, interaction.guild_id, env);
+    const guildUser = await getGuildUser(user.id, interaction.guild_id as Snowflake, env);
     if(!guildUser.user) return <Message ephemeral>❌Error: User was not found.❌</Message>;
     await sendDM(user.id, `<@${user.id}>, you have been banned for ${reason}.`, env);
-    await createBan(user.id, interaction.guild_id, reason, days || 1, env);
+    await createBan(user.id, interaction.guild_id as Snowflake, reason, days || 1, env);
     const msg = <Message ephemeral>
       <Embed
         title={"Banned User"}
@@ -38,7 +37,7 @@ export default function ban(): CommandHandler<Env> {
         <Field name="Target:">{`<@${user.id}>`}</Field>
         <Field name="Snowflake:">`{user.id}`</Field>
         <Field name="Reason:">{reason}</Field>
-        <Field name="Invoked By:">{`<@${interaction.member.user.id}>`}</Field>
+        <Field name="Invoked By:">{`<@${(interaction.member).user.id}>`}</Field>
       </Embed>
     </Message>;
     const res = await createLog(interaction.guild_id, msg, env);
